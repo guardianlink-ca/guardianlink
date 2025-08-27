@@ -5,20 +5,11 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors());
-app.use(express.json());
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
 // middleware
 app.use(cors());
 app.use(express.json());
 
-// root (welcome)
+// root
 app.get('/', (_req, res) => {
   res.json({ ok: true, app: 'GuardianLink running 🚀', version: 'v1' });
 });
@@ -44,7 +35,7 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// echo (POST): send JSON and we echo it back
+// echo (POST)
 app.post('/api/echo', (req, res) => {
   res.json({
     ok: true,
@@ -54,8 +45,15 @@ app.post('/api/echo', (req, res) => {
   });
 });
 
-// start server (for local dev)
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+/**
+ * ---- IMPORTANT ----
+ * Export for Vercel (serverless) and only listen when running locally.
+ */
+module.exports = app;
+
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+  });
+}
 
