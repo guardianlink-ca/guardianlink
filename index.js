@@ -3,7 +3,6 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 // middleware
 app.use(cors());
@@ -11,7 +10,7 @@ app.use(express.json());
 
 // root
 app.get('/', (_req, res) => {
-  res.json({ ok: true, app: 'GuardianLink running 🚀', version: 'v1' });
+  res.json({ ok: true, app: 'GuardianLink', version: 'v1' });
 });
 
 // status
@@ -35,7 +34,7 @@ app.get('/health', (_req, res) => {
   });
 });
 
-// echo (POST)
+// echo (for prod + local)
 app.post('/api/echo', (req, res) => {
   res.json({
     ok: true,
@@ -46,14 +45,16 @@ app.post('/api/echo', (req, res) => {
 });
 
 /**
- * ---- IMPORTANT ----
- * Export for Vercel (serverless) and only listen when running locally.
+ * IMPORTANT:
+ * Export the Express app for Vercel.
+ * Only call app.listen() when running locally (node index.js).
  */
 module.exports = app;
 
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () =>
+    console.log(`Server running on http://localhost:${PORT}`)
+  );
 }
 
